@@ -9,15 +9,20 @@ void Show_Menu()
 {
 	printf("========================================\n");
 	printf("学生成绩管理系统\n");
-	printf("请输入0~5功能键：\n");
+	printf("========================================\n");
+	printf("请输入0-9功能键：\n");
 
 	printf("1：成绩录入\n");
 	printf("2：信息查询\n");
 	printf("3：信息删除\n");
 	printf("4：信息修改\n");
-	printf("5：信息保存\n");
+	printf("5：按数学成绩排序\n");
+	printf("6：按英语成绩排序\n");
+	printf("7：按平均成绩排序\n");
+	printf("8：按学号排序\n");
+	printf("9：信息保存\n");
 	printf("0：退出程序\n");
-	printf("输入（0-5）：");
+	printf("输入（0-9）：");
 }
 
 STU * Create_List(STU * phead)
@@ -184,7 +189,7 @@ void Update_Node(STU * phead, unsigned n)
 	if (phead == NULL)
 	{
 		printf("没有可修改的数据鸭 (>_<) ");
-		return phead;
+		return;
 	}
 
 	for (pcur = phead; pcur != NULL; pcur = pcur->next)
@@ -249,7 +254,14 @@ void Update_Node(STU * phead, unsigned n)
 
 void Sort_Node(STU * phead, enum SORT_BY sort_by)
 {
-	float t;
+	void * pdata;
+	int data_size = sizeof(STU) - sizeof(STU *);
+
+	if ((pdata = malloc(sizeof(STU)-sizeof(STU *))) == NULL)
+	{
+		printf("堆区内存已用完！\n");
+		exit(1);
+	}
 
 	//冒泡排序
 	for (STU* temp = phead; temp->next != NULL; temp = temp->next) 
@@ -261,25 +273,25 @@ void Sort_Node(STU * phead, enum SORT_BY sort_by)
 			case NUM:
 				if (p->num > p->next->num)
 				{
-					t = p->num;
-					p->num = p->next->num;
-					p->next->num = t;
+					memcpy(pdata, (void *)p, data_size);
+					memcpy((void *)p, (void *)p->next, data_size);
+					memcpy((void *)p->next, pdata, data_size);
 				}
 				break;
 			case MATH:
 				if (p->math > p->next->math)
 				{
-					t = p->math;
-					p->math = p->next->math;
-					p->next->math = t;
+					memcpy(pdata, (void *)p, data_size);
+					memcpy((void *)p, (void *)p->next, data_size);
+					memcpy((void *)p->next, pdata, data_size);
 				}
 				break;
 			case ENGLISH:
 				if (p->English > p->next->English)
 				{
-					t = p->English;
-					p->English = p->next->English;
-					p->next->English = t;
+					memcpy(pdata, (void *)p, data_size);
+					memcpy((void *)p, (void *)p->next, data_size);
+					memcpy((void *)p->next, pdata, data_size);
 				}
 				break;
 			case AVERAGE:
@@ -310,11 +322,6 @@ int main()
 
 		switch (menu_input)
 		{
-		/*
-		printf("4：信息修改\n");
-		printf("5：信息保存\n");
-		printf("0：退出程序\n");
-		*/
 		case 0:
 			exit(0);
 		case 1: //成绩录入
@@ -329,20 +336,34 @@ int main()
 			break;
 		case 2: //信息查询
 			Show_List(head);
-			printf("按数学排序\n");
-			getchar();
-			Sort_Node(head, MATH);
-			Show_List(head);
 			break;
 		case 3: //信息删除
 			printf("请输入您要删除的学生的学号：");
 			scanf("%d", &n);
 			head=Delete_Node(head, n);
 			break;
-		case 4:
+		case 4: //信息修改
 			printf("请输入要修改学生的学号：");
 			scanf("%d", &n);
 			Update_Node(head, n);
+			break;
+		case 5: //按数学成绩排序
+			Sort_Node(head, MATH);
+			Show_List(head);
+			break;
+		case 6: //按英语成绩排序
+			Sort_Node(head, ENGLISH);
+			Show_List(head);
+			break;
+		case 7: //按平均成绩排序
+			printf("敬请期待\n");
+			break;
+		case 8: //按学号排序
+			Sort_Node(head, NUM);
+			Show_List(head);
+			break;
+		case 9: //信息保存
+			printf("信息保存\n");
 			break;
 		default:
 			printf("请输入正确的值(0-5)\n\n");
