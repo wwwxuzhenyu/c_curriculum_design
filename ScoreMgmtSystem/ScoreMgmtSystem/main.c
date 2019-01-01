@@ -247,7 +247,7 @@ void Update_Node(STU * phead, unsigned n)
 	STU * pcur, * pupd = NULL;
 	if (phead == NULL)
 	{
-		printf("没有可修改的数据鸭 (>_<) ");
+		printf("没有可修改的数据鸭 (>_<) \n");
 		return;
 	}
 
@@ -393,7 +393,7 @@ int Save_List2File(STU * phead, const char * filename)
 		printf("不能打开文件\n");
 		return 1;
 	}	
-	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\t平均分\n");
+	
 	pcur = phead;
 	while (pcur != NULL)
 	{
