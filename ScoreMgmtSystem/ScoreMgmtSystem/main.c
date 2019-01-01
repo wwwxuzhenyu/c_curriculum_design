@@ -302,7 +302,7 @@ void Sort_Node(STU * phead, enum SORT_BY sort_by)
 			}
 		}
 	}
-
+	free(pdata);
 }
 
 int main()
