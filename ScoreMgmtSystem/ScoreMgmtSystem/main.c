@@ -254,44 +254,47 @@ void Update_Node(STU * phead, unsigned n)
 
 void Sort_Node(STU * phead, enum SORT_BY sort_by)
 {
+	STU * pfirst = NULL, * pend = NULL;
+
 	void * pdata;
 	int data_size = sizeof(STU) - sizeof(STU *);
 
-	if ((pdata = malloc(sizeof(STU)-sizeof(STU *))) == NULL)
+	if ((pdata = malloc(data_size)) == NULL)
 	{
 		printf("堆区内存已用完！\n");
 		exit(1);
 	}
 
 	//冒泡排序
-	for (STU* temp = phead; temp->next != NULL; temp = temp->next) 
+	pfirst = phead;
+	while (pfirst != pend)
 	{
-		for (STU* p = phead; p->next != NULL; p = p->next) 
+		while (pfirst->next != pend)
 		{
 			switch (sort_by)
 			{
 			case NUM:
-				if (p->num > p->next->num)
+				if (pfirst->num > pfirst->next->num)
 				{
-					memcpy(pdata, (void *)p, data_size);
-					memcpy((void *)p, (void *)p->next, data_size);
-					memcpy((void *)p->next, pdata, data_size);
+					memcpy(pdata, (void *)pfirst, data_size);
+					memcpy((void *)pfirst, (void *)pfirst->next, data_size);
+					memcpy((void *)pfirst->next, pdata, data_size);
 				}
 				break;
 			case MATH:
-				if (p->math > p->next->math)
+				if (pfirst->math > pfirst->next->math)
 				{
-					memcpy(pdata, (void *)p, data_size);
-					memcpy((void *)p, (void *)p->next, data_size);
-					memcpy((void *)p->next, pdata, data_size);
+					memcpy(pdata, (void *)pfirst, data_size);
+					memcpy((void *)pfirst, (void *)pfirst->next, data_size);
+					memcpy((void *)pfirst->next, pdata, data_size);
 				}
 				break;
 			case ENGLISH:
-				if (p->English > p->next->English)
+				if (pfirst->English > pfirst->next->English)
 				{
-					memcpy(pdata, (void *)p, data_size);
-					memcpy((void *)p, (void *)p->next, data_size);
-					memcpy((void *)p->next, pdata, data_size);
+					memcpy(pdata, (void *)pfirst, data_size);
+					memcpy((void *)pfirst, (void *)pfirst->next, data_size);
+					memcpy((void *)pfirst->next, pdata, data_size);
 				}
 				break;
 			case AVERAGE:
@@ -300,7 +303,11 @@ void Sort_Node(STU * phead, enum SORT_BY sort_by)
 			default:
 				break;
 			}
+			
+			pfirst = pfirst->next;
 		}
+		pend = pfirst;
+		pfirst = phead;
 	}
 	free(pdata);
 }
