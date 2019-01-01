@@ -7,6 +7,7 @@ typedef struct student
 	char sex;
 	float math;
 	float English;
+	//float average;
 	struct student *next;
 }STU;
 

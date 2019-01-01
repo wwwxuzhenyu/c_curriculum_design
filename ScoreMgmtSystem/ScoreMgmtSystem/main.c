@@ -176,11 +176,24 @@ STU * Insert_Node(STU * phead, STU * pnew)
 	if (phead->num > pnew->num)
 	{
 		pnew->next = phead;
-		phead = pnew;
-		return phead;
+		return pnew;
+	}
+	if (phead->num == pnew->num)
+	{
+		printf("学号已存在，已将信息替换为新输入的信息！\n");
+		pnew->next = phead->next;
+		free(phead);
+		return pnew;
 	}
 	for (pcur = phead; pcur->next != NULL; pcur = pcur->next)
 	{
+		if (pcur->next->num == pnew->num)
+		{
+			printf("学号已存在，已将信息替换为新输入的信息！\n");
+			pnew->next = pcur->next->next;
+			free(pcur->next);
+			pcur->next = pnew;	
+		}
 		if (pcur->next->num > pnew->num)
 		{
 			pnew->next = pcur->next;
@@ -190,6 +203,7 @@ STU * Insert_Node(STU * phead, STU * pnew)
 	}
 	pcur->next = pnew;
 	pnew->next = NULL;
+	
 	return phead;
 }
 
