@@ -27,9 +27,45 @@ void Show_Menu()
 
 STU * Create_List(STU * phead)
 {
+	char ans;
 	STU * pnew;
 	//STU * pend;
 	phead = NULL;
+	FILE * fp;
+	
+	printf("是否从已有的文件中读取信息（y/n）？");
+	scanf(" %c", &ans);
+	if (ans == 'y' || ans == 'Y')
+	{
+		if ((fp = fopen(FILENAME, "r")) == NULL)
+		{
+			printf("未找到已保存的文件！\n");
+		}
+		else
+		{
+			do
+			{
+				if ((pnew = (STU *)malloc(sizeof(STU))) == NULL)
+				{
+					printf("堆区内存已用完！\n");
+					exit(1);
+				}
+				fscanf(fp, "%u %s %c %f %f\n", &pnew->num, pnew->name, &pnew->sex, &pnew->math, &pnew->English);
+				pnew->next = NULL;
+
+				if (phead == NULL)
+				{
+					phead = pnew;
+				}
+				else
+				{
+					phead = Insert_Node(phead, pnew);
+				}
+			} while (feof(fp) != 1);
+		}
+		return phead;
+	}
+
 	do
 	{
 		printf("\n");
@@ -114,6 +150,11 @@ void Set_Node(STU * pnode)
 void Show_List(STU * phead)
 {
 	STU * pcur;
+	if (NULL == phead)
+	{
+		printf("目前还没有录入学生信息\n");
+		return;
+	}
 	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\n");
 	pcur = phead;
 	while (pcur != NULL)
@@ -157,7 +198,7 @@ STU * Delete_Node(STU * phead, unsigned n)
 	STU * pcur, *pdel;
 	if (phead == NULL)
 	{
-		printf("没有可删除的数据鸭 (>_<) ");
+		printf("没有可删除的数据鸭 (>_<) \n");
 		return phead;
 	}
 	if (phead->num == n)
@@ -312,10 +353,35 @@ void Sort_Node(STU * phead, enum SORT_BY sort_by)
 	free(pdata);
 }
 
+int Save_List2File(STU * phead, const char * filename)
+{
+	STU * pcur;
+	FILE * fp;
+	if (NULL == phead)
+	{
+		printf("目前还没有录入学生信息\n");
+		return 1;
+	}
+	if ((fp = fopen(filename, "w+")) == NULL)
+	{
+		printf("不能打开文件\n");
+		return 1;
+	}	
+	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\n");
+	pcur = phead;
+	while (pcur != NULL)
+	{
+		fprintf(fp,"%u\t%s\t%c\t%3.1f\t\t%3.1f\n", pcur->num, pcur->name, pcur->sex, pcur->math, pcur->English);
+		pcur = pcur->next;
+	}
+	fclose(fp);
+	return 0;
+}
+
 int main()
 {
 	STU * head = NULL;
-	int menu_input,n;
+	int menu_input,n,result;
 	STU * pn;
 
 	head=Create_List(head);
@@ -370,7 +436,9 @@ int main()
 			Show_List(head);
 			break;
 		case 9: //信息保存
-			printf("信息保存\n");
+			result=Save_List2File(head, FILENAME);
+			if (result == 0) printf("信息保存成功\n");
+			else printf("信息保存失败！\n");
 			break;
 		default:
 			printf("请输入正确的值(0-5)\n\n");
