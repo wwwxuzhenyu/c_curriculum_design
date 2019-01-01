@@ -150,6 +150,8 @@ void Set_Node(STU * pnode)
 
 void Show_List(STU * phead)
 {
+	int listcount = 0;
+	float mathavg=0, engavg=0;
 	STU * pcur;
 	if (NULL == phead)
 	{
@@ -161,8 +163,14 @@ void Show_List(STU * phead)
 	while (pcur != NULL)
 	{
 		printf("%u\t%s\t%c\t%3.1f\t\t%3.1f\t\t%3.1f\n", pcur->num, pcur->name, pcur->sex, pcur->math, pcur->English, pcur->average);
+		mathavg += pcur->math;
+		engavg += pcur->English;
+		listcount++;
 		pcur = pcur->next;
 	}
+	mathavg = mathavg / listcount;
+	engavg = engavg / listcount;
+	printf("学生数：%d\t数学平均分：%3.1f\t英语平均分：%3.1f", listcount, mathavg, engavg);
 	printf("\n");
 }
 
