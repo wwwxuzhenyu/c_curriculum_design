@@ -50,7 +50,7 @@ STU * Create_List(STU * phead)
 					printf("堆区内存已用完！\n");
 					exit(1);
 				}
-				fscanf(fp, "%u %s %c %f %f\n", &pnew->num, pnew->name, &pnew->sex, &pnew->math, &pnew->English);
+				fscanf(fp, "%u %s %c %f %f %f\n", &pnew->num, pnew->name, &pnew->sex, &pnew->math, &pnew->English, &pnew->average);
 				pnew->next = NULL;
 
 				if (phead == NULL)
@@ -98,6 +98,7 @@ STU * Create_List(STU * phead)
 		scanf("%f", &pnew->math);
 		printf("输入考生的英语成绩：");
 		scanf("%f", &pnew->English);
+		pnew->average = (pnew->math + pnew->English) / 2;
 
 		pnew->next = NULL;
 
@@ -143,7 +144,7 @@ void Set_Node(STU * pnode)
 	scanf("%f", &pnode->math);
 	printf("输入考生的英语成绩：");
 	scanf("%f", &pnode->English);
-
+	pnode->average = (pnode->math + pnode->English) / 2;
 	pnode->next = NULL;
 }
 
@@ -155,19 +156,14 @@ void Show_List(STU * phead)
 		printf("目前还没有录入学生信息\n");
 		return;
 	}
-	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\n");
+	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\t平均分\n");
 	pcur = phead;
 	while (pcur != NULL)
 	{
-		printf("%u\t%s\t%c\t%3.1f\t\t%3.1f\n", pcur->num, pcur->name, pcur->sex, pcur->math, pcur->English);
+		printf("%u\t%s\t%c\t%3.1f\t\t%3.1f\t\t%3.1f\n", pcur->num, pcur->name, pcur->sex, pcur->math, pcur->English, pcur->average);
 		pcur = pcur->next;
 	}
 	printf("\n");
-}
-
-void gradeinput()
-{
-	printf("成绩录入函数\n");
 }
 
 STU * Insert_Node(STU * phead, STU * pnew)
@@ -290,7 +286,9 @@ void Update_Node(STU * phead, unsigned n)
 		{
 			printf("输入考生的数学成绩：");
 			scanf("%f", &pupd->math);
+			pupd->average = (pupd->math + pupd->English) / 2;
 		}
+
 
 		printf("输入考生的英语成绩（%3.1f）是否修改（y/n）？", pupd->English);
 		scanf(" %c", &ans);
@@ -298,6 +296,7 @@ void Update_Node(STU * phead, unsigned n)
 		{
 			printf("输入考生的英语成绩：");
 			scanf("%f", &pupd->English);
+			pupd->average = (pupd->math + pupd->English) / 2;
 		}
 		printf("操作成功。考号为%d的学生信息更新成功\n", n);
 	}
@@ -353,7 +352,12 @@ void Sort_Node(STU * phead, enum SORT_BY sort_by)
 				}
 				break;
 			case AVERAGE:
-				printf("敬请期待\n");
+				if (pfirst->average > pfirst->next->average)
+				{
+					memcpy(pdata, (void *)pfirst, data_size);
+					memcpy((void *)pfirst, (void *)pfirst->next, data_size);
+					memcpy((void *)pfirst->next, pdata, data_size);
+				}
 				break;
 			default:
 				break;
@@ -381,11 +385,11 @@ int Save_List2File(STU * phead, const char * filename)
 		printf("不能打开文件\n");
 		return 1;
 	}	
-	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\n");
+	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\t平均分\n");
 	pcur = phead;
 	while (pcur != NULL)
 	{
-		fprintf(fp,"%u\t%s\t%c\t%3.1f\t\t%3.1f\n", pcur->num, pcur->name, pcur->sex, pcur->math, pcur->English);
+		fprintf(fp,"%u\t%s\t%c\t%3.1f\t\t%3.1f\t\t%3.1f\n", pcur->num, pcur->name, pcur->sex, pcur->math, pcur->English, pcur->average);
 		pcur = pcur->next;
 	}
 	fclose(fp);
@@ -443,7 +447,8 @@ int main()
 			Show_List(head);
 			break;
 		case 7: //按平均成绩排序
-			printf("敬请期待\n");
+			Sort_Node(head, AVERAGE);
+			Show_List(head);
 			break;
 		case 8: //按学号排序
 			Sort_Node(head, NUM);
