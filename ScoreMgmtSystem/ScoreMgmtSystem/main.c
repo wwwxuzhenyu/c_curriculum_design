@@ -7,22 +7,32 @@
 
 void Show_Menu()
 {
-	printf("========================================\n");
-	printf("学生成绩管理系统\n");
-	printf("========================================\n");
+	printf("========================================\n\n");
+	printf("             学生成绩管理系统\n\n");
+	printf("========================================\n\n");
 	printf("请输入0-9功能键：\n");
 
-	printf("1：成绩录入\n");
-	printf("2：信息查询\n");
-	printf("3：信息删除\n");
-	printf("4：信息修改\n");
-	printf("5：按数学成绩排序\n");
-	printf("6：按英语成绩排序\n");
-	printf("7：按平均成绩排序\n");
-	printf("8：按学号排序\n");
-	printf("9：信息保存\n");
-	printf("0：退出程序\n");
-	printf("输入（0-9）：");
+	printf("1：成绩录入\n\n");
+	printf("2：信息查询\n\n");
+	printf("3：信息删除\n\n");
+	printf("4：信息修改\n\n");
+	printf("5：按数学成绩排序\n\n");
+	printf("6：按英语成绩排序\n\n");
+	printf("7：按平均成绩排序\n\n");
+	printf("8：按学号排序\n\n");
+	printf("9：信息保存\n\n");
+	printf("0：退出程序\n\n\n");
+	printf("\n输入（0-9）：");
+}
+
+int Back_To_Menu()
+{
+	int n;
+	printf("\n\n\n\n\n                 是否继续上次操作？\n\n：");
+	printf("                   输入1：继续操作\n；");
+	printf("                   输入0：返回菜单\n；");
+	scanf("%d", &n);
+	return n;
 }
 
 STU * Create_List(STU * phead)
@@ -124,15 +134,15 @@ void Set_Node(STU * pnode)
 {
 	printf("输入考生的考号：");
 	scanf("%u", &pnode->num);
-
-	printf("输入考生的姓名：");
+	
+	printf("\n输入考生的姓名：");
 	scanf_s("%s", pnode->name, 20);
 	getchar(); //处理回车
 
 	pnode->sex = 'a';
 	while (pnode->sex != 'M' && pnode->sex != 'F')
 	{
-		printf("输入考生的性别(M/F)：");
+		printf("\n输入考生的性别(M/F)：");
 		scanf("%c", &pnode->sex);
 		getchar(); //处理回车
 		if (pnode->sex == 'm') pnode->sex = 'M';
@@ -140,9 +150,9 @@ void Set_Node(STU * pnode)
 	}
 
 
-	printf("输入考生的数学成绩：");
+	printf("\n输入考生的数学成绩：");
 	scanf("%f", &pnode->math);
-	printf("输入考生的英语成绩：");
+	printf("\n输入考生的英语成绩：");
 	scanf("%f", &pnode->English);
 	pnode->average = (pnode->math + pnode->English) / 2;
 	pnode->next = NULL;
@@ -158,6 +168,8 @@ void Show_List(STU * phead)
 		printf("目前还没有录入学生信息\n");
 		return;
 	}
+	printf("\n=========================================================================\n\n");
+	printf("成绩单如下：\n\n\n");
 	printf("学号\t姓名\t性别\t数学成绩\t英语成绩\t平均分\n");
 	pcur = phead;
 	while (pcur != NULL)
@@ -170,7 +182,7 @@ void Show_List(STU * phead)
 	}
 	mathavg = mathavg / listcount;
 	engavg = engavg / listcount;
-	printf("学生数：%d\t数学平均分：%3.1f\t英语平均分：%3.1f", listcount, mathavg, engavg);
+	printf("\n\n\n学生数：%d\t数学平均分：%3.1f\t英语平均分：%3.1f", listcount, mathavg, engavg);
 	printf("\n");
 }
 
@@ -407,10 +419,10 @@ int Save_List2File(STU * phead, const char * filename)
 int main()
 {
 	STU * head = NULL;
-	int menu_input,n,result;
+	int menu_input, n, result, ans,ans_showlist;
 	STU * pn;
 
-	head=Create_List(head);
+	head = Create_List(head);
 
 	Show_Menu();
 
@@ -423,7 +435,7 @@ int main()
 		{
 		case 0:
 			exit(0);
-		case 1: //成绩录入
+		loop1:		case 1: //成绩录入
 			if ((pn = (STU *)malloc(sizeof(STU))) == NULL)
 			{
 				printf("堆区内存已用完！\n");
@@ -432,20 +444,31 @@ int main()
 			Set_Node(pn);
 			head = Insert_Node(head, pn);
 			Show_List(head);
-			break;
+			ans = Back_To_Menu();
+			if (ans == 1) goto loop1;
+			else break;
 		case 2: //信息查询
 			Show_List(head);
-			break;
-		case 3: //信息删除
+			printf("\n\n\n                       是否保存此信息到txt文件？\n\n");
+			printf("                       输入1：保存文件;\n");
+			printf("                       输入0：返回菜单;\n");
+			scanf("%d", &ans_showlist);
+			if (ans_showlist == 1) goto loop9;
+			else break;
+		loop2:		case 3: //信息删除
 			printf("请输入您要删除的学生的学号：");
 			scanf("%d", &n);
-			head=Delete_Node(head, n);
-			break;
-		case 4: //信息修改
+			head = Delete_Node(head, n);
+			ans = Back_To_Menu();
+			if (ans == 1) goto loop2;
+			else break;
+		loop3:      case 4: //信息修改
 			printf("请输入要修改学生的学号：");
 			scanf("%d", &n);
 			Update_Node(head, n);
-			break;
+			ans = Back_To_Menu();
+			if (ans == 1) goto loop3;
+			else break;
 		case 5: //按数学成绩排序
 			Sort_Node(head, MATH);
 			Show_List(head);
@@ -462,16 +485,18 @@ int main()
 			Sort_Node(head, NUM);
 			Show_List(head);
 			break;
-		case 9: //信息保存
-			result=Save_List2File(head, FILENAME);
+		loop9:      case 9: //信息保存
+			result = Save_List2File(head, FILENAME);
 			if (result == 0) printf("信息保存成功\n");
 			else printf("信息保存失败！\n");
+			printf("\n\n\n                   按回车键继续");
+			getchar();
 			break;
 		default:
 			printf("请输入正确的值(0-5)\n\n");
 			break;
 		}
-		
+
 		getchar(); //处理回车
 		Show_Menu();
 		

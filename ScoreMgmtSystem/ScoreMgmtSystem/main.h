@@ -17,7 +17,7 @@ enum SORT_BY {NUM, MATH, ENGLISH, AVERAGE};
 
 STU * Insert_Node(STU * phead, STU * pnew);
 void Set_Node(STU * pnode);
-
+int Back_To_Menu();
 void Show_Menu();
 STU * Create_List(STU * phead);
 void Show_List(STU * phead);
