@@ -1,2 +1,5 @@
 # c_curriculum_design
-Score Management System
+华中科技大学 光学与电子信息学院 18级许震宇 C语言课程设计作业
+学生成绩管理系统
+实现功能：
+学生成绩的录入、排序、修改、删除、保存、读取等
