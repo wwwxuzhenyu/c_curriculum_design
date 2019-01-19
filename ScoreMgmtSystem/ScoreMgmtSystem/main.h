@@ -25,3 +25,4 @@ STU * Delete_Node(STU * phead, unsigned n);
 void Update_Node(STU * phead, unsigned n);
 void Sort_Node(STU * phead, enum SORT_BY sort_by);
 int Save_List2File(STU * phead, const char * filename);
+void Delete_List(STU * phead);

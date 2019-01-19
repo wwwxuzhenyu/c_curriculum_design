@@ -189,6 +189,11 @@ void Show_List(STU * phead)
 STU * Insert_Node(STU * phead, STU * pnew)
 {
 	STU * pcur;
+	if (NULL == phead)
+	{
+		return pnew;
+	}
+
 	if (phead->num > pnew->num)
 	{
 		pnew->next = phead;
@@ -416,6 +421,17 @@ int Save_List2File(STU * phead, const char * filename)
 	return 0;
 }
 
+void Delete_List(STU * phead)
+{
+	STU * pcur;
+	while (phead != NULL)
+	{
+		pcur = phead->next;
+		free(phead);
+		phead = pcur;
+	}
+}
+
 int main()
 {
 	STU * head = NULL;
@@ -434,6 +450,7 @@ int main()
 		switch (menu_input)
 		{
 		case 0:
+			Delete_List(head);
 			exit(0);
 		loop1:		case 1: //成绩录入
 			if ((pn = (STU *)malloc(sizeof(STU))) == NULL)
@@ -493,7 +510,7 @@ int main()
 			getchar();
 			break;
 		default:
-			printf("请输入正确的值(0-5)\n\n");
+			printf("请输入正确的值(0-9)\n\n");
 			break;
 		}
 
